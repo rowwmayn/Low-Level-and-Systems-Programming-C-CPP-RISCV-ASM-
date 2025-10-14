@@ -1,0 +1,126 @@
+# tutorial.s - Complete dissection of a RISC-V assembly program
+
+# ============================================================================
+# SECTION 1: DIRECTIVES (Instructions for the assembler, not the CPU)
+# ============================================================================
+
+.global _start          # Makes _start visible to the linker
+                        # Without this, the linker won't know where to start
+
+.data                   # Data section - for variables and constants
+    # Store data in memory (we'll cover this more later)
+    message: .string "Hello"
+    number:  .word 42
+
+.text                   # Text section - where your code goes
+                        # This is the executable part
+
+# ============================================================================
+# SECTION 2: LABELS (Markers in your code)
+# ============================================================================
+
+_start:                 # Entry point - program starts here
+                        # The linker looks for this by default
+                        # Think of it like main() in C
+
+# ============================================================================
+# SECTION 3: INSTRUCTIONS (What the CPU actually executes)
+# ============================================================================
+
+    # --- IMMEDIATE INSTRUCTIONS (li = Load Immediate) ---
+    # Format: li destination, value
+    li a0, 42           # Load the number 42 into register a0
+                        # a0 = 42
+                        
+    li a1, 10           # Load 10 into a1
+                        # a1 = 10
+
+    # --- ARITHMETIC INSTRUCTIONS ---
+    # Format: operation destination, source1, source2
+    add a2, a0, a1      # Add: a2 = a0 + a1 (42 + 10 = 52)
+    sub a3, a0, a1      # Subtract: a3 = a0 - a1 (42 - 10 = 32)
+    mul a4, a0, a1      # Multiply: a4 = a0 * a1 (42 * 10 = 420)
+    
+    # --- IMMEDIATE ARITHMETIC ---
+    # Format: operation destination, source, immediate_value
+    addi a5, a0, 5      # Add immediate: a5 = a0 + 5 (42 + 5 = 47)
+                        # More efficient than loading 5 into a register first
+    
+    # --- LOGICAL INSTRUCTIONS ---
+    and t0, a0, a1      # Bitwise AND: t0 = a0 & a1
+    or  t1, a0, a1      # Bitwise OR:  t1 = a0 | a1
+    xor t2, a0, a1      # Bitwise XOR: t2 = a0 ^ a1
+    
+    # --- COMPARISON AND BRANCHING ---
+    li t3, 100          # Load 100 for comparison
+    
+    beq a0, t3, equal_label     # Branch if equal: if a0 == t3, jump to equal_label
+    bne a0, t3, not_equal       # Branch if not equal: if a0 != t3, jump
+    blt a0, t3, less_than       # Branch if less than: if a0 < t3, jump
+    bge a0, t3, greater_equal   # Branch if greater or equal: if a0 >= t3, jump
+    
+not_equal:
+    # This code runs if a0 != t3
+    li a6, 1            # Set flag to 1
+    j continue          # Unconditional jump to continue
+    
+equal_label:
+    li a6, 0            # Set flag to 0
+    j continue
+    
+less_than:
+    li a6, 2
+    j continue
+    
+greater_equal:
+    li a6, 3
+
+continue:
+    # --- MOVE INSTRUCTION ---
+    mv a7, a0           # Move: a7 = a0 (copy value from a0 to a7)
+                        # Actually a pseudo-instruction for: addi a7, a0, 0
+
+# ============================================================================
+# SECTION 4: SYSTEM CALLS (Talking to the operating system)
+# ============================================================================
+
+exit_program:
+    li a7, 93           # Load syscall number 93 (exit) into a7
+                        # a7 tells the OS which syscall we want
+                        
+    li a0, 0            # Exit code 0 (success)
+                        # a0 is used to pass the exit code
+                        
+    ecall               # Execute system call
+                        # This transfers control to the OS
+
+
+# ============================================================================
+# KEY CONCEPTS EXPLAINED:
+# ============================================================================
+#
+# REGISTERS: RISC-V has 32 registers (x0-x31)
+#   - x0 (zero): Always contains 0, cannot be changed
+#   - x1 (ra): Return address (for functions)
+#   - x2 (sp): Stack pointer
+#   - x8 (s0/fp): Frame pointer
+#   - a0-a7: Argument registers (also used for return values)
+#   - t0-t6: Temporary registers
+#   - s0-s11: Saved registers (must preserve across function calls)
+#
+# INSTRUCTION FORMAT: Most instructions follow these patterns:
+#   - R-type: op dest, src1, src2  (e.g., add a0, a1, a2)
+#   - I-type: op dest, src, imm    (e.g., addi a0, a1, 10)
+#   - S-type: op src, offset(base) (e.g., sw a0, 0(sp))
+#   - B-type: op src1, src2, label (e.g., beq a0, a1, label)
+#
+# PSEUDO-INSTRUCTIONS: The assembler expands these into real instructions
+#   - li a0, 100  →  addi a0, zero, 100
+#   - mv a1, a0   →  addi a1, a0, 0
+#   - j label     →  jal zero, label
+#
+# LABELS: Markers that the assembler converts to addresses
+#   - Used for branching and jumping
+#   - End with a colon (:)
+#
+# ============================================================================

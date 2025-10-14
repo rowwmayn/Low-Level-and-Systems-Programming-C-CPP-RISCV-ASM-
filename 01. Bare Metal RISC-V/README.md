@@ -20,10 +20,10 @@
 
 ```
 ┌─────────────────────────┐    ┌─────────────────────────┐
-│    Regular Programming  │    │   Bare-Metal Programming │
+│    Regular Programming  │    │  Bare-Metal Programming │
 ├─────────────────────────┤    ├─────────────────────────┤
-│   Your C Program        │    │   Your Assembly/C Code   │
-│   (printf, malloc, etc) │    │   (direct instructions)  │
+│   Your C Program        │    │   Your Assembly/C Code  │
+│   (printf, malloc, etc) │    │   (direct instructions) │
 ├─────────────────────────┤    ├─────────────────────────┤
 │   C Standard Library    │    │                         │
 │   (glibc, stdio.h)      │    │        NOTHING!         │
@@ -146,13 +146,13 @@ System calls are the **only way** bare-metal programs can communicate with the o
 ```
 Your Program          Linux Kernel
      │                      │
-     │  1. Setup registers   │
+     │  1. Setup registers  │
      │     x10 = fd         │
      │     x11 = buffer     │
      │     x12 = length     │
      │     x17 = syscall#   │
      │                      │
-     │  2. ecall ───────────→│
+     │  2. ecall ──────────→│
      │                      │ 3. Kernel processes request
      │                      │    - Validates arguments
      │                      │    - Performs I/O operation
