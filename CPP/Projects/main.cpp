@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 int func(int data1, int data2){
     int sum = data1+data2;
@@ -17,6 +18,40 @@ int Program1_Basic_Printing_Data_Declaring_and_Initialising_Function_Declaring_a
     return 0;
 };
 
+
+int in_out_err(){
+    
+    // Standard output flows
+    std::cout<<"I'm a print message"<<std::endl;
+    std::cerr<<"I'm a error message"<<std::endl;
+    std::clog<<"I'm a log message!"<<std::endl;
+    int age = 57;
+    std::cout<<"Write your name: ";
+    std::string name;
+    
+    //Input Flows
+    std::cin>>name;
+    std::cout<<"Hello "<< name << " How are you doing? I heard you're " <<age<< " years old!"<<std::endl;
+    std::string mom_name, pops_name;
+    std::cout<<"Write your mom and dad's first name separated by space: ";
+    std::cin>> mom_name >> pops_name;
+    std::cout<<"Hello "<<name<<" I heard you'r mom's name is "<<mom_name<<" and dad's name is "<<pops_name<<"."<<std::endl;
+    
+    // What if the user writes his full name ?
+
+    std::string full_name;
+    std::cout<<"Write your full name: "<<std::endl;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    std::getline(std::cin,full_name);
+    std::cout<<"Hello, "<<full_name<<std::endl;
+    return 0;
+
+};
+
+
 int main(){
-    Program1_Basic_Printing_Data_Declaring_and_Initialising_Function_Declaring_and_Calling();
+    //Program1_Basic_Printing_Data_Declaring_and_Initialising_Function_Declaring_and_Calling();
+    //in_out_err();
+    in_out_err();
 };
